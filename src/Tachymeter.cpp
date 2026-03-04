@@ -22,33 +22,28 @@ void Tachymeter::initialize() {
 }
 
 void Tachymeter::update() {
-    if (eventFlag) { // Un événement a eu lieu, c'est-à-dire que l'aimant est passé devant le capteur
-        eventFlag = false; // Réinitialiser le drapeau d'événement
+    if (eventFlag) {
+        eventFlag = false;
 
-        // Faire sonner le buzzer pour signaler un passage
-        tone(buzzerPin, 500);
-        delay(50);
-        noTone(buzzerPin);
+        // Faire sonner le buzzer de façon non bloquante
+        tone(buzzerPin, 500, 50); // 3ème paramètre = durée automatique, pas de delay !
 
         // Calculer la vitesse
-        const unsigned long currentMillis = millis(); // Temps actuel
-        const float period = (currentMillis - previousMillis) / 1000.0; // Période entre deux passages de l'aimant en secondes
-        if (period > 0) { // Éviter la division par zéro
-            currentSpeed = (wheelRadius * 2 * PI) / period; // Vitesse en m/s
+        const unsigned long currentMillis = millis();
+        const float period = (currentMillis - previousMillis) / 1000.0;
+        if (period > 0) {
+            currentSpeed = (wheelRadius * 2 * PI) / period;
         }
         else {
             currentSpeed = 0;
         }
-        previousMillis = currentMillis; // Mettre à jour le temps de la dernière impulsion
+        previousMillis = currentMillis;
     }
     else {
-        // Vérifier si le véhicule est arrêté
         unsigned long currentMillis = millis();
-        float period = (currentMillis - previousMillis) / 1000.0; // Période en secondes
-        // On considère le véhicule comme arrêté si la période dépasse le seuil (la roue tourne trop lentement,
-        // donc l'aimant ne passe pas devant le capteur)
+        float period = (currentMillis - previousMillis) / 1000.0;
         if (period > stationaryPeriod) {
-            currentSpeed = 0; // Véhicule arrêté
+            currentSpeed = 0;
         }
     }
 }

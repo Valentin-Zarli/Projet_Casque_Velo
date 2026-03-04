@@ -154,7 +154,7 @@ constexpr char t[2] = ","; /**< Délimiteur pour la fonction strtok */
 File myFile; /**< Objet pour la gestion de la carte SD */
 
 // ############################ BOUTON ###################################
-constexpr int buttonPin = 32; /**< Broche du bouton */
+constexpr int buttonPin = 00; /**< Broche du bouton */
 int buttonState = 0; /**< État du bouton */
 
 // Variables pour stocker les angles initiaux
@@ -192,7 +192,7 @@ void setup()
     //############################ SD CARD Setup ###################################
     pinMode(CS_PIN, OUTPUT);  //  Initialisation de la broche CS - permet de sélectionner la carte SD
 
-    Serial.print("Initializing SD card... ");
+    /*Serial.print("Initializing SD card... ");
     if (!SD.begin(CS_PIN))
     {
         Serial.println("Card initialization failed!");
@@ -207,7 +207,7 @@ void setup()
     myFile.println(
         "time,yaw_master,pitch_master,roll_master,yaw_slave,pitch_slave,roll_slave,yaw_diff,pitch_diff,roll_diff,speed,alarmState,limit_angle,limit_time");
     myFile.close();  //  Fermer le fichier
-
+    */
     //############################ BLUETOOTH Setup ################################
     SlaveConnected = false; //  Flag pour indiquer si le slave est connecté : initialisé à false (non connecté)
 
@@ -255,7 +255,9 @@ void loop()
         getSlaveData(yprSlave); // Récupérer les angles de l'orientation du slave
         double speedKmh = tachymeter.getSpeed() * 3.6; // Récupérer la vitesse en km/h
         // speedKmh = 15; // Vitesse simulée pour les tests, on remplace la vitesse réelle par x km/h
-
+         // Lecture du bouton ICI, toujours exécutée
+        buttonState = digitalRead(buttonPin);
+        Serial.print("Button state: "); Serial.println(buttonState); // log temporaire
         // Lit l'état du bouton - Le système démarre lorsque le bouton est pressé, les angles sont mis à zéro
         buttonState = digitalRead(buttonPin);
         if (buttonState == LOW)
@@ -301,12 +303,12 @@ void loop()
         }
         else // Si le système n'est pas démarré, on affiche les angles bruts (a des fins de débogage uniquement)
         {
-            Serial.print("Système non démarré --> Yaw : ");
+            /*Serial.print("Système non démarré --> Yaw : ");
             Serial.print(ypr[0]);
             Serial.print(" Roll : ");
             Serial.print(ypr[1]);
             Serial.print(" Pitch : ");
-            Serial.println(ypr[2]);
+            Serial.println(ypr[2]);*/
             // REMARQUE : Tant que le système n'est pas démarré, les données ne sont pas enregistrées sur la carte SD.
         }
     }

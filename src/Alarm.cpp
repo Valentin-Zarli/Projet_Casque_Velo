@@ -29,49 +29,44 @@ void Alarm::init() const
 
 boolean Alarm::update(const float (&ypr_diff)[3], const double speed)
 {
-    // Récupère les limites en fonction de la vitesse
     const std::pair<double, double> limits = getLimits(speed);
     const double limitAngle = limits.first;
     const double limitTime = limits.second;
-    // Serial.print("Limit angle: "); Serial.print(limitAngle); Serial.print(" Limit time: "); Serial.println(limitTime);
 
-    // Récupère les différences d'angles
     const double diffYaw = ypr_diff[0];
-    // REMARQUE : Les angles de tangage et de roulis ne sont pas utilisés pour le moment
-    // double diffPitch = ypr_diff[1];
-    // double diffRoll = ypr_diff[2];
 
-    // On vérifie si l'angle actuel dépasse la limite
+    // LOGS
+    Serial.print("Speed: "); Serial.print(speed);
+    Serial.print(" km/h | DiffYaw: "); Serial.print(diffYaw);
+    Serial.print("° | LimitAngle: "); Serial.print(limitAngle);
+    Serial.print("° | LimitTime: "); Serial.print(limitTime);
+    Serial.print("s | AlarmState: "); Serial.println(alarmState ? "ON" : "OFF");
+
     if (abs(diffYaw) > limitAngle)
     {
-        // Si le temps de dépassement est nul (l'angle n'était pas dépassé au temps t-1)
         if (initialExceedTime == 0)
         {
-            // On enregistre le temps actuel comme temps initial de dépassement
             initialExceedTime = millis();
+            Serial.println(">>> Début dépassement angle !");
         }
-        // Si le temps de dépassement est supérieur au temps limite
+        Serial.print("Temps dépassement: "); Serial.print((millis() - initialExceedTime) / 1000.0); Serial.println("s");
         if (millis() - initialExceedTime > limitTime * 1000)
         {
-            // On déclenche l'alarme
             alarmState = true;
+            Serial.println(">>> ALARME DECLENCHEE !");
         }
     }
     else
     {
-        // Si l'angle n'est plus dépassé, on réinitialise le temps de dépassement
         initialExceedTime = 0;
-        // On arrête l'alarme
         alarmState = false;
     }
 
-    // Si l'alarme est déclenchée, on la démarre
     if (alarmState)
     {
         start();
         return true;
     }
-    // Sinon, on l'arrête
     else
     {
         stop();

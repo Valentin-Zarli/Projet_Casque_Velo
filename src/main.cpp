@@ -192,7 +192,7 @@ void setup()
     //############################ SD CARD Setup ###################################
     pinMode(CS_PIN, OUTPUT);  //  Initialisation de la broche CS - permet de sélectionner la carte SD
 
-    /*Serial.print("Initializing SD card... ");
+    Serial.print("Initializing SD card... ");
     if (!SD.begin(CS_PIN))
     {
         Serial.println("Card initialization failed!");
@@ -207,7 +207,7 @@ void setup()
     myFile.println(
         "time,yaw_master,pitch_master,roll_master,yaw_slave,pitch_slave,roll_slave,yaw_diff,pitch_diff,roll_diff,speed,alarmState,limit_angle,limit_time");
     myFile.close();  //  Fermer le fichier
-    */
+    
     //############################ BLUETOOTH Setup ################################
     SlaveConnected = false; //  Flag pour indiquer si le slave est connecté : initialisé à false (non connecté)
 

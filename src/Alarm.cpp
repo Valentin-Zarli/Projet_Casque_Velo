@@ -32,15 +32,18 @@ boolean Alarm::update(const float (&ypr_diff)[3], const double speed)
     const std::pair<double, double> limits = getLimits(speed);
     const double limitAngle = limits.first;
     const double limitTime = limits.second;
-
     const double diffYaw = ypr_diff[0];
 
-    // LOGS
-    Serial.print("Speed: "); Serial.print(speed);
-    Serial.print(" km/h | DiffYaw: "); Serial.print(diffYaw);
-    Serial.print("° | LimitAngle: "); Serial.print(limitAngle);
-    Serial.print("° | LimitTime: "); Serial.print(limitTime);
-    Serial.print("s | AlarmState: "); Serial.println(alarmState ? "ON" : "OFF");
+    // Log toutes les 3 secondes
+    static unsigned long lastLog = 0;
+    if (millis() - lastLog >= 1000){
+        lastLog = millis();
+        Serial.print("Speed: "); Serial.print(speed);
+        Serial.print(" km/h | DiffYaw: "); Serial.print(diffYaw);
+        Serial.print("° | LimitAngle: "); Serial.print(limitAngle);
+        Serial.print("° | LimitTime: "); Serial.print(limitTime);
+        Serial.print("s | AlarmState: "); Serial.println(alarmState ? "ON" : "OFF");
+    }
 
     if (abs(diffYaw) > limitAngle)
     {

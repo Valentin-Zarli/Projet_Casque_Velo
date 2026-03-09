@@ -36,7 +36,7 @@
 // Facteur de conversion secondes/microsecondes
 #define MICRO_CONSTANT 1.0E-6
 // Rayon de la roue en mètres : À MODIFIER EN FONCTION DE LA ROUE UTILISÉE
-#define WHEEL_RADIUS 0.31
+#define WHEEL_RADIUS 0.38
 
 //############################ BLUETOOTH ###################################
 #if !defined(CONFIG_BT_SPP_ENABLED)
@@ -256,8 +256,13 @@ void loop()
         double speedKmh = tachymeter.getSpeed() * 3.6; // Récupérer la vitesse en km/h
         // speedKmh = 15; // Vitesse simulée pour les tests, on remplace la vitesse réelle par x km/h
          // Lecture du bouton ICI, toujours exécutée
-        buttonState = digitalRead(buttonPin);
-        Serial.print("Button state: "); Serial.println(buttonState); // log temporaire
+        /*buttonState = digitalRead(buttonPin);
+        Serial.print("Système non démarré --> Yaw : ");
+            Serial.print(ypr[0]);
+            Serial.print(" Roll : ");
+            Serial.print(ypr[1]);
+            Serial.print(" Pitch : ");
+            Serial.println(ypr[2]);*/
         // Lit l'état du bouton - Le système démarre lorsque le bouton est pressé, les angles sont mis à zéro
         buttonState = digitalRead(buttonPin);
         if (buttonState == LOW)
@@ -303,12 +308,12 @@ void loop()
         }
         else // Si le système n'est pas démarré, on affiche les angles bruts (a des fins de débogage uniquement)
         {
-            /*Serial.print("Système non démarré --> Yaw : ");
+            Serial.print("Système non démarré --> Yaw : ");
             Serial.print(ypr[0]);
             Serial.print(" Roll : ");
             Serial.print(ypr[1]);
             Serial.print(" Pitch : ");
-            Serial.println(ypr[2]);*/
+            Serial.println(ypr[2]);
             // REMARQUE : Tant que le système n'est pas démarré, les données ne sont pas enregistrées sur la carte SD.
         }
     }
@@ -438,17 +443,17 @@ void logData(const float (&ypr_master)[3], const float (&ypr_slave)[3], const fl
 
         // Créer une chaîne de caractères pour l'affichage aligné dans le moniteur série
         char formattedString[512];
-        sprintf(formattedString,
+        /*sprintf(formattedString,
                 "time: %lu YAW --> Master: %7.2f Slave: %7.2f Diff: %7.2f PITCH --> Master: %7.2f Slave: %7.2f Diff: %7.2f ROLL --> Master: %7.2f Slave: %7.2f Diff: %7.2f Speed: %7.2f limit_angle: %7.2f limit_time: %7.2f",
                 millis(),
                 ypr_master[0], ypr_slave[0], ypr_diff[0],
                 ypr_master[1], ypr_slave[1], ypr_diff[1],
                 ypr_master[2], ypr_slave[2], ypr_diff[2],
                 speed,
-                limits.first, limits.second);
+                limits.first, limits.second);*/
 
         // Imprimer la chaîne formatée dans la console série
-        Serial.println(formattedString);
+        //Serial.println(formattedString);
     }
     else // Si le fichier n'a pas pu être ouvert
     {

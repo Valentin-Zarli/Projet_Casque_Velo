@@ -33,6 +33,8 @@ boolean Alarm::update(const float (&ypr_diff)[3], const double speed)
     const double limitAngle = limits.first;
     const double limitTime = limits.second;
     const double diffYaw = ypr_diff[0];
+    const double diffRoll = ypr_diff[1];
+    const double diffPitch = ypr_diff[2];
 
     // Log toutes les 3 secondes
     static unsigned long lastLog = 0;
@@ -40,12 +42,14 @@ boolean Alarm::update(const float (&ypr_diff)[3], const double speed)
         lastLog = millis();
         Serial.print("Speed: "); Serial.print(speed);
         Serial.print(" km/h | DiffYaw: "); Serial.print(diffYaw);
+        Serial.print("° | DiffRoll: "); Serial.print(diffRoll);
+        Serial.print("° | DiffPitch: "); Serial.print(diffPitch);
         Serial.print("° | LimitAngle: "); Serial.print(limitAngle);
         Serial.print("° | LimitTime: "); Serial.print(limitTime);
         Serial.print("s | AlarmState: "); Serial.println(alarmState ? "ON" : "OFF");
     }
 
-    if (abs(diffYaw) > limitAngle)
+    if (abs(diffYaw) > limitAngle || abs(diffRoll) > limitAngle || abs(diffPitch) > limitAngle)
     {
         if (initialExceedTime == 0)
         {

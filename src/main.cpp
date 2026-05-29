@@ -159,6 +159,10 @@ int buttonState = 0; /**< État du bouton */
 // Variables pour stocker les angles initiaux
 float initialMasterYaw = 0; /**< Yaw initial du master — utilisé pour la mise à zéro */
 float initialSlaveYaw = 0; /**< Yaw initial du slave — utilisé pour la mise à zéro */
+float initialMasterRoll = 0; /**< Roll initial du master — utilisé pour la mise à zéro */
+float initialSlaveRoll = 0; /**< Roll initial du slave — utilisé pour la mise à zéro */
+float initialMasterPitch = 0; /**< Pitch initial du master — utilisé pour la mise à zéro */
+float initialSlavePitch = 0; /**< Pitch initial du slave — utilisé pour la mise à zéro */
 
 // Variable pour stocker l'état du système
 bool systemStarted = false; /**< État du système (true = système démarré, false = système arrêté) */
@@ -270,6 +274,10 @@ void loop()
             // Initialiser les angles de départ
             initialMasterYaw = ypr[0];
             initialSlaveYaw = yprSlave[0];
+            initialMasterRoll = ypr[1];
+            initialSlaveRoll = yprSlave[1];
+            initialMasterPitch = ypr[2];
+            initialSlavePitch = yprSlave[2];
             // Démarrer le système
             systemStarted = true;
         }

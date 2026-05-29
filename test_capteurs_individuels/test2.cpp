@@ -106,21 +106,21 @@
 //   float my = (magnetometer[1] - minY) / (maxY - minY) * 2 - 1;
 //   float mz = (magnetometer[2] - minZ) / (maxZ - minZ) * 2 - 1;
 //
-//   // Calcul du roll et pitch
-//   float roll1  = atan2(ay, az);
-//   float pitch1 = atan2(-ax, sqrt(ay * ay + az * az));
+//   // Calcul du Pitch et Roll
+//   float Pitch1  = atan2(ay, az);
+//   float Roll1 = atan2(-ax, sqrt(ay * ay + az * az));
 //
 //   // Correction des valeurs du magnétomètre
-//   float Mx_h = mx * cos(pitch1) + mz * sin(pitch1);
-//   float My_h = mx * sin(roll1) * sin(pitch1) + my * cos(roll1) - mz * sin(roll1) * cos(pitch1);
+//   float Mx_h = mx * cos(Roll1) + mz * sin(Roll1);
+//   float My_h = mx * sin(Pitch1) * sin(Roll1) + my * cos(Pitch1) - mz * sin(Pitch1) * cos(Roll1);
 //
 //   // Calcul de l'azimut (yaw basé sur le magnétomètre)
 //   float azimuth = atan2(My_h, Mx_h) * 180.0 / M_PI;
 //   if (azimuth < 0) azimuth += 360;
 //
 //   // Calcul des angles
-//   float roll = roll1 * 180.0 / M_PI;
-//   float pitch = pitch1 * 180.0 / M_PI;
+//   float Pitch = Pitch1 * 180.0 / M_PI;
+//   float Roll = Roll1 * 180.0 / M_PI;
 //
 //   // Intégration du gyroscope pour améliorer le yaw
 //   unsigned long currentTime = millis();
@@ -129,8 +129,8 @@
 //   yaw = 0.90 * (yaw + gz * deltaTime) + 0.02 * azimuth; // Filtrage complémentaire
 //
 //   // Affichage des résultats
-//   SerialPort.print("Roll: "); SerialPort.print(roll);
-//   SerialPort.print("°, Pitch: "); SerialPort.print(pitch);
+//   SerialPort.print("Pitch: "); SerialPort.print(Pitch);
+//   SerialPort.print("°, Roll: "); SerialPort.print(Roll);
 //   SerialPort.print("°, Yaw: "); SerialPort.println(yaw);
 //
 //   delay(50);

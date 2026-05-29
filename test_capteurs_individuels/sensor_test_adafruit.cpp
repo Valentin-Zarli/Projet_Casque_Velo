@@ -8,8 +8,8 @@
 // Adafruit_MPU6050_Accelerometer mpu_accel(&mpu);
 // Adafruit_MPU6050_Gyro mpu_gyro(&mpu);
 // // Adafruit_Simple_AHRS ahrs(&mpu_accel, &mpu_gyro);
-// float roll;
-// float pitch;
+// float Pitch;
+// float Roll;
 // float heading;
 // float x_angle, y_angle, z_angle;
 // float x_deviation, y_deviation, z_deviation;
@@ -90,16 +90,16 @@
 //     x_angle += g.gyro.x;
 //     y_angle += g.gyro.y;
 //     z_angle += g.gyro.z;
-//     roll = orientation.roll;
-//     pitch = orientation.pitch;
+//     Pitch = orientation.Pitch;
+//     Roll = orientation.Roll;
 //     heading = orientation.heading;
 //     unsigned long time_var = millis() - time_interval;
 //     x_total_deviations += x_deviation * time_var;
 //     y_total_deviations += y_deviation * time_var;
 //     z_total_deviations += z_deviation * time_var;
 //
-//     // Serial.print("Roll:");Serial.print(roll); Serial.print(",");
-//     // Serial.print("Pitch:");Serial.print(pitch);Serial.print(",");
+//     // Serial.print("Pitch:");Serial.print(Pitch); Serial.print(",");
+//     // Serial.print("Roll:");Serial.print(Roll);Serial.print(",");
 //     // Serial.print("Heading:");Serial.print(heading);Serial.print(",");
 //     // Serial.print("AccelX:");Serial.print(a.acceleration.x);Serial.print(",");
 //     // Serial.print("AccelY:");Serial.print(a.acceleration.y);Serial.print(",");

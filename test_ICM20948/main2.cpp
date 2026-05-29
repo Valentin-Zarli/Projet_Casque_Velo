@@ -92,15 +92,15 @@ void loop() {
     float a_y = accel.acceleration.y;
     float a_z = accel.acceleration.z;
 
-    float roll = atan2(a_y, a_z) * RAD_TO_DEG;
-    float pitch = atan2(-a_x, sqrt(a_y * a_y + a_z * a_z)) * RAD_TO_DEG;
+    float Pitch = atan2(a_y, a_z) * RAD_TO_DEG;
+    float Roll = atan2(-a_x, sqrt(a_y * a_y + a_z * a_z)) * RAD_TO_DEG;
 
-    float X_h = mag_x * cos(pitch * (M_PI / 180)) + 
-                mag_y * sin(roll * (M_PI / 180)) * sin(pitch * (M_PI / 180)) + 
-                mag_z * cos(roll * (M_PI / 180)) * sin(pitch * (M_PI / 180));
+    float X_h = mag_x * cos(Roll * (M_PI / 180)) + 
+                mag_y * sin(Pitch * (M_PI / 180)) * sin(Roll * (M_PI / 180)) + 
+                mag_z * cos(Pitch * (M_PI / 180)) * sin(Roll * (M_PI / 180));
 
-    float Y_h = mag_y * cos(roll * (M_PI / 180)) - 
-                mag_z * sin(roll * (M_PI / 180));
+    float Y_h = mag_y * cos(Pitch * (M_PI / 180)) - 
+                mag_z * sin(Pitch * (M_PI / 180));
 
     float yaw = atan2(-Y_h, X_h) * RAD_TO_DEG;
     if (yaw < 0) yaw += 360;  // Correction pour avoir [0, 360°]
@@ -109,8 +109,8 @@ void loop() {
     float filtered_yaw = applyKalmanFilter(yaw);
 
     // Affichage des angles
-    Serial.print("Roll: "); Serial.print(roll);
-    Serial.print("\tPitch: "); Serial.print(pitch);
+    Serial.print("Pitch: "); Serial.print(Pitch);
+    Serial.print("\tRoll: "); Serial.print(Roll);
     Serial.print("\tYaw (brut): "); Serial.print(yaw);
     Serial.print("\tYaw (Kalman): "); Serial.println(filtered_yaw);
   }

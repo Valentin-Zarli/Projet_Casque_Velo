@@ -69,7 +69,7 @@ public:
      *
      * Remarque : Les angles de tangage et de roulis ne sont pas utilisés pour le moment.
      *
-     * @param ypr_diff tableau contenant les différences d'angles (yaw, pitch, roll) entre le master et le slave
+     * @param ypr_diff tableau contenant les différences d'angles (yaw, Roll, Pitch) entre le master et le slave
      * @param speed vitesse du vélo en km/h
      * @return true si l'alarme est déclenchée, false sinon
      */

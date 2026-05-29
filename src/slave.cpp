@@ -39,7 +39,7 @@ uint8_t address[6]; /**< Adresse MAC du périphérique Bluetooth SLAVE */
 char message[MAX_BUFFER_SIZE_6]; /**< Buffer pour stocker les données reçues via Bluetooth */
 char buffer[MAX_BUFFER_SIZE_6]; /**< Buffer pour stocker et concaténer les données à envoyer via Bluetooth */
 
-float avg_yaw = 0, avg_pitch = 0, avg_roll = 0;
+float avg_yaw = 0, avg_Roll = 0, avg_Pitch = 0;
 /**< Variables pour stocker les valeurs moyennes des angles d'orientation */
 
 bool ack_received = true; /**< Stocke l'état de l'accusé de réception */
@@ -89,8 +89,8 @@ void loop()
     mpu.update(); // Routine du MPU
     if (ack_received) // Si un ACK est reçu (le master est prêt à recevoir de nouvelles données)
     {
-        mpu.getAveragedYPR(avg_yaw, avg_pitch, avg_roll); // Récupérer les angles de l'orientation moyens
-        snprintf(buffer, sizeof(buffer), "%f,%f,%f!",avg_yaw, avg_pitch, avg_roll); // Stocker les valeurs dans le buffer
+        mpu.getAveragedYPR(avg_yaw, avg_Roll, avg_Pitch); // Récupérer les angles de l'orientation moyens
+        snprintf(buffer, sizeof(buffer), "%f,%f,%f!",avg_yaw, avg_Roll, avg_Pitch); // Stocker les valeurs dans le buffer
         SerialBT.write((uint8_t*)buffer, strlen(buffer));  // Envoyer les données via Bluetooth
         Serial.println(buffer); // Afficher les données dans le moniteur série
 

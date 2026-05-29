@@ -94,13 +94,13 @@
 //   float My = magnetometer[1];
 //   float Mz = magnetometer[2];
 //
-//   // Calcul du pitch et roll
-//   float roll  = atan2(Ay, Az);
-//   float pitch = atan2(-Ax, sqrt(Ay * Ay + Az * Az));
+//   // Calcul du Roll et Pitch
+//   float Pitch  = atan2(Ay, Az);
+//   float Roll = atan2(-Ax, sqrt(Ay * Ay + Az * Az));
 //
 //   // Correction des valeurs du magnétomètre
-//   float Mx_h = Mx * cos(pitch) + Mz * sin(pitch);
-//   float My_h = Mx * sin(roll) * sin(pitch) + My * cos(roll) - Mz * sin(roll) * cos(pitch);
+//   float Mx_h = Mx * cos(Roll) + Mz * sin(Roll);
+//   float My_h = Mx * sin(Pitch) * sin(Roll) + My * cos(Pitch) - Mz * sin(Pitch) * cos(Roll);
 //
 //   // Calcul de l'azimut (angle vers le nord magnétique)
 //   float azimuth = atan2(My_h, Mx_h) * 180.0 / PI;

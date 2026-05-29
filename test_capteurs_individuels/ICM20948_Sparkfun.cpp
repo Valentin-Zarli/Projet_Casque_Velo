@@ -42,7 +42,7 @@ unsigned long lastPrint = 0; // Keep track of print time
 
 // Vector to hold quaternion
 static float q[4] = {1.0, 0.0, 0.0, 0.0};
-static float yaw, pitch, roll; // Euler angle output
+static float yaw, Roll, Pitch; // Euler angle output
 
 void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz, float deltat);
 void get_scaled_IMU(float Gxyz[3], float Axyz[3], float Mxyz[3]);
@@ -86,13 +86,13 @@ void loop() {
 
     if (millis() - lastPrint > PRINT_SPEED) {
       // Define Tait-Bryan angles. Strictly valid only for approximately level movement
-      roll = atan2((q[0] * q[1] + q[2] * q[3]), 0.5 - (q[1] * q[1] + q[2] * q[2]));
-      pitch = asin(2.0 * (q[0] * q[2] - q[1] * q[3]));
+      Pitch = atan2((q[0] * q[1] + q[2] * q[3]), 0.5 - (q[1] * q[1] + q[2] * q[2]));
+      Roll = asin(2.0 * (q[0] * q[2] - q[1] * q[3]));
       yaw = atan2((q[1] * q[2] + q[0] * q[3]), 0.5 - (q[2] * q[2] + q[3] * q[3]));
       // to degrees
       yaw *= 180.0 / PI;
-      pitch *= 180.0 / PI;
-      roll *= 180.0 / PI;
+      Roll *= 180.0 / PI;
+      Pitch *= 180.0 / PI;
 
       // http://www.ngdc.noaa.gov/geomag-web/#declination
       // conventional nav, yaw increases CW from North, corrected for local magnetic declination
@@ -102,9 +102,9 @@ void loop() {
 
       Serial.print(yaw, 0);
       Serial.print(", ");
-      Serial.print(pitch, 0);
+      Serial.print(Roll, 0);
       Serial.print(", ");
-      Serial.print(roll, 0);
+      Serial.print(Pitch, 0);
       Serial.println();
       lastPrint = millis(); // Update lastPrint time
     }

@@ -1,7 +1,7 @@
 #include "MPU.h"
 
 // Constructeur de la classe MPU - Initialisation des variables
-MPU::MPU() : ypr{}, yawBuffer{}, pitchBuffer{}, rollBuffer{}, bufferIndex(0),
+MPU::MPU() : ypr{}, yawBuffer{}, RollBuffer{}, PitchBuffer{}, bufferIndex(0),
                              bufferFull(false), startTime(0), temps(0)
 {
 }
@@ -78,17 +78,17 @@ void MPU::initialize()
     float a_y = accel.acceleration.y;
     float a_z = accel.acceleration.z;
 
-    // Calcul des angles d'Euler (Roll, Pitch, Yaw)
-    float roll = atan2(a_y, a_z) * RAD_TO_DEG;
-    float pitch = atan2(-a_x, sqrt(a_y * a_y + a_z * a_z)) * RAD_TO_DEG;
+    // Calcul des angles d'Euler (Pitch, Roll, Yaw)
+    float Pitch = atan2(a_y, a_z) * RAD_TO_DEG;
+    float Roll = atan2(-a_x, sqrt(a_y * a_y + a_z * a_z)) * RAD_TO_DEG;
 
     // Calcul de l'angle de lacet (Yaw) à partir du magnétomètre (avec compensation des angles de tangage et de roulis)
-    float X_h = mag_x * cos(pitch * (M_PI / 180)) +
-        mag_y * sin(roll * (M_PI / 180)) * sin(pitch * (M_PI / 180)) +
-        mag_z * cos(roll * (M_PI / 180)) * sin(pitch * (M_PI / 180));
+    float X_h = mag_x * cos(Roll * (M_PI / 180)) +
+        mag_y * sin(Pitch * (M_PI / 180)) * sin(Roll * (M_PI / 180)) +
+        mag_z * cos(Pitch * (M_PI / 180)) * sin(Roll * (M_PI / 180));
 
-    float Y_h = mag_y * cos(roll * (M_PI / 180)) -
-        mag_z * sin(roll * (M_PI / 180));
+    float Y_h = mag_y * cos(Pitch * (M_PI / 180)) -
+        mag_z * sin(Pitch * (M_PI / 180));
 
     float yaw = atan2(-Y_h, X_h) * RAD_TO_DEG;
     yaw = yaw + 180; // Correction pour avoir [0, 360°]
@@ -117,17 +117,17 @@ void MPU::update()
     float a_y = accel.acceleration.y;
     float a_z = accel.acceleration.z;
 
-    // Calcul des angles d'Euler (Roll, Pitch, Yaw)
-    float roll = atan2(a_y, a_z) * RAD_TO_DEG;
-    float pitch = atan2(-a_x, sqrt(a_y * a_y + a_z * a_z)) * RAD_TO_DEG;
+    // Calcul des angles d'Euler (Pitch, Roll, Yaw)
+    float Pitch = atan2(a_y, a_z) * RAD_TO_DEG;
+    float Roll = atan2(-a_x, sqrt(a_y * a_y + a_z * a_z)) * RAD_TO_DEG;
 
     // Calcul de l'angle de lacet (Yaw) à partir du magnétomètre (avec compensation des angles de tangage et de roulis)
-    float X_h = mag_x * cos(pitch * (M_PI / 180)) +
-        mag_y * sin(roll * (M_PI / 180)) * sin(pitch * (M_PI / 180)) +
-        mag_z * cos(roll * (M_PI / 180)) * sin(pitch * (M_PI / 180));
+    float X_h = mag_x * cos(Roll * (M_PI / 180)) +
+        mag_y * sin(Pitch * (M_PI / 180)) * sin(Roll * (M_PI / 180)) +
+        mag_z * cos(Pitch * (M_PI / 180)) * sin(Roll * (M_PI / 180));
 
-    float Y_h = mag_y * cos(roll * (M_PI / 180)) -
-        mag_z * sin(roll * (M_PI / 180));
+    float Y_h = mag_y * cos(Pitch * (M_PI / 180)) -
+        mag_z * sin(Pitch * (M_PI / 180));
 
     float yaw = atan2(-Y_h, X_h) * RAD_TO_DEG;
     yaw = yaw + 180; // Correction pour avoir [0, 360°]
@@ -136,16 +136,16 @@ void MPU::update()
     float filtered_yaw = applyKalmanFilter(yaw);
 
     // Affichage des angles
-    // Serial.print("Roll: "); Serial.print(roll);
-    // Serial.print("\tPitch: "); Serial.print(pitch);
+    // Serial.print("Pitch: "); Serial.print(Pitch);
+    // Serial.print("\tRoll: "); Serial.print(Roll);
     // Serial.print("\tYaw (brut): "); Serial.print(yaw);
     // Serial.print("\tYaw (Kalman): "); Serial.println(filtered_yaw);
-    addSample(filtered_yaw, pitch, roll); // Ajouter l'échantillon dans le buffer de calcul de la moyenne
+    addSample(filtered_yaw, Roll, Pitch); // Ajouter l'échantillon dans le buffer de calcul de la moyenne
 
     // assigner les valeurs des angles
     this->ypr[0] = yaw;
-    this->ypr[1] = pitch;
-    this->ypr[2] = roll;
+    this->ypr[1] = Roll;
+    this->ypr[2] = Pitch;
 }
 
 float MPU::getAngleDifference(float a, float b) {
@@ -206,12 +206,12 @@ float MPU::getYaw() const
     return ypr[0];
 }
 
-float MPU::getPitch() const
+float MPU::getRoll() const
 {
     return ypr[1];
 }
 
-float MPU::getRoll() const
+float MPU::getPitch() const
 {
     return ypr[2];
 }
@@ -224,12 +224,12 @@ void MPU::getYPR(float (&ypr)[3]) const
 }
 
 
-void MPU::addSample(float new_yaw, float new_pitch, float new_roll)
+void MPU::addSample(float new_yaw, float new_Roll, float new_Pitch)
 {
     // Ajouter les valeurs dans le buffer
     yawBuffer[bufferIndex] = new_yaw;
-    pitchBuffer[bufferIndex] = new_pitch;
-    rollBuffer[bufferIndex] = new_roll;
+    RollBuffer[bufferIndex] = new_Roll;
+    PitchBuffer[bufferIndex] = new_Pitch;
     // Incrémenter l'index
     bufferIndex = (bufferIndex + 1) % BUFFER_SIZE;
     // Vérifier si le buffer est plein
@@ -237,7 +237,7 @@ void MPU::addSample(float new_yaw, float new_pitch, float new_roll)
 }
 
 
-void MPU::getAveragedYPR(float& avg_yaw, float& avg_pitch, float& avg_roll) const
+void MPU::getAveragedYPR(float& avg_yaw, float& avg_Roll, float& avg_Pitch) const
 {
     // Si le buffer n'est pas plein, on renvoie les valeurs brutes
     if (!bufferFull)
@@ -245,36 +245,36 @@ void MPU::getAveragedYPR(float& avg_yaw, float& avg_pitch, float& avg_roll) cons
         float local_ypr[3];
         getYPR(local_ypr);
         avg_yaw = local_ypr[0];
-        avg_pitch = local_ypr[1];
-        avg_roll = local_ypr[2];
+        avg_Roll = local_ypr[1];
+        avg_Pitch = local_ypr[2];
         return;
     }
 
     // Calcul de la moyenne
     float sum_yaw = 0;
-    float sum_pitch = 0;
-    float sum_roll = 0;
+    float sum_Roll = 0;
+    float sum_Pitch = 0;
     for (int i = 0; i < BUFFER_SIZE; i++) // Parcourir le buffer
     {
         // Somme des valeurs
         sum_yaw += yawBuffer[i];
-        sum_pitch += pitchBuffer[i];
-        sum_roll += rollBuffer[i];
+        sum_Roll += RollBuffer[i];
+        sum_Pitch += PitchBuffer[i];
     }
     // Calcul de la moyenne
     avg_yaw = sum_yaw / BUFFER_SIZE;
-    avg_pitch = sum_pitch / BUFFER_SIZE;
-    avg_roll = sum_roll / BUFFER_SIZE;
-    // Serial.print("Yaw: "); Serial.print(avg_yaw); Serial.print("\tPitch: "); Serial.print(avg_pitch); Serial.print("\tRoll: "); Serial.println(avg_roll);
+    avg_Roll = sum_Roll / BUFFER_SIZE;
+    avg_Pitch = sum_Pitch / BUFFER_SIZE;
+    // Serial.print("Yaw: "); Serial.print(avg_yaw); Serial.print("\tRoll: "); Serial.print(avg_Roll); Serial.print("\tPitch: "); Serial.println(avg_Pitch);
 }
 
 void MPU::getAveragedYPR(float (&ypr)[3]) const
 {   // Surcharge de la méthode pour renvoyer les valeurs dans un tableau
-    float avg_yaw, avg_pitch, avg_roll;
-    getAveragedYPR(avg_yaw, avg_pitch, avg_roll);
+    float avg_yaw, avg_Roll, avg_Pitch;
+    getAveragedYPR(avg_yaw, avg_Roll, avg_Pitch);
     ypr[0] = avg_yaw;
-    ypr[1] = avg_pitch;
-    ypr[2] = avg_roll;
+    ypr[1] = avg_Roll;
+    ypr[2] = avg_Pitch;
 }
 
 

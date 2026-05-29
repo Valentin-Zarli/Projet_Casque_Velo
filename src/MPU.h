@@ -15,17 +15,17 @@
 #include <Arduino.h>
 #include <Adafruit_ICM20948.h>
 /**
-* @brief Classe de gestion du MPU. La classe permet de récupérer les angles d'orientation du MPU(yaw, pitch, roll).
+* @brief Classe de gestion du MPU. La classe permet de récupérer les angles d'orientation du MPU(yaw, Roll, Pitch).
 * L'initialisation et le calibrage du MPU et du DMP est effectué dans la classe, ainsi que les éventuels traitements des données.
 */
 class MPU {
 private:
     Adafruit_ICM20948 icm; /**< Objet pour la gestion du MPU */
     // Angles d'orientation
-    float ypr[3]; /**< Tableau pour stocker les valeurs des angles d'orientation [yaw, pitch, roll] */
+    float ypr[3]; /**< Tableau pour stocker les valeurs des angles d'orientation [yaw, Roll, Pitch] */
     float yawBuffer[BUFFER_SIZE]; /**< Buffer pour stocker les valeurs de l'angle de lacet */
-    float pitchBuffer[BUFFER_SIZE]; /**< Buffer pour stocker les valeurs de l'angle de tangage */
-    float rollBuffer[BUFFER_SIZE]; /**< Buffer pour stocker les valeurs de l'angle de roulis */
+    float RollBuffer[BUFFER_SIZE]; /**< Buffer pour stocker les valeurs de l'angle de tangage */
+    float PitchBuffer[BUFFER_SIZE]; /**< Buffer pour stocker les valeurs de l'angle de roulis */
     int bufferIndex;  /**< Index actuel dans le buffer */
     bool bufferFull;  /**< Indique si on a rempli au moins x valeurs */
 
@@ -55,7 +55,7 @@ private:
     /**
     * @brief Méthode pour ajouter un échantillon dans le buffer utilisé pour le calcul de la moyenne.
     */
-    void addSample(float new_yaw, float new_pitch, float new_roll);
+    void addSample(float new_yaw, float new_Roll, float new_Pitch);
     /**
      * @brief Applique un filtre de Kalman sur la mesure de l'angle de lacet.
      * @param measured_yaw Valeur mesurée de l'angle de lacet.
@@ -93,29 +93,29 @@ public:
     /**
     * @brief Méthode pour récupérer la valeur de l'angle de tangage.
     */
-    float getPitch() const;
+    float getRoll() const;
 
     /**
     * @brief Méthode pour récupérer la valeur de l'angle de roulis.
     */
-    float getRoll() const;
+    float getPitch() const;
 
     /**
-    * @brief Méthode pour récupérer les valeurs des angles d'orientation (yaw, pitch, roll) en degrés.
+    * @brief Méthode pour récupérer les valeurs des angles d'orientation (yaw, Roll, Pitch) en degrés.
     */
     void getYPR(float (&ypr)[3]) const;
 
     /**
     * @brief Méthode pour obtenir les valeurs moyennes des angles d'orientation en degrés.
     * @param avg_yaw Valeur moyenne de l'angle de lacet.
-    * @param avg_pitch Valeur moyenne de l'angle de tangage.
-    * @param avg_roll Valeur moyenne de l'angle de roulis.
+    * @param avg_Roll Valeur moyenne de l'angle de tangage.
+    * @param avg_Pitch Valeur moyenne de l'angle de roulis.
     */
-    void getAveragedYPR(float &avg_yaw, float &avg_pitch, float &avg_roll) const;
+    void getAveragedYPR(float &avg_yaw, float &avg_Roll, float &avg_Pitch) const;
 
     /**
      * @brief Méthode pour obtenir les valeurs moyennes des angles d'orientation en degrés.
-     * @param ypr Tableau contenant les valeurs des angles d'orientation [yaw, pitch, roll]
+     * @param ypr Tableau contenant les valeurs des angles d'orientation [yaw, Roll, Pitch]
      */
     void getAveragedYPR(float (&ypr)[3]) const;
 };

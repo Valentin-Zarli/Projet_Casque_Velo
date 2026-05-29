@@ -21,7 +21,6 @@
 #include "Tachymeter.h"
 #include "pitches.h"
 
-
 /******************************************************************************
  *                                   DEFINES                                  *
  ******************************************************************************/
@@ -74,7 +73,7 @@ void getBluetoothStatus(esp_spp_cb_event_t event, esp_spp_cb_param_t* param);
  * @brief
  *  Récupère les valeurs de l'accélération et de l'orientation du MPU de slave via Bluetooth
  * @param ypr_slave
- *  Tableau contenant les angles de l'orientation de slave [yaw, pitch, roll] [lacet, tangage, roulis] en radians
+ *  Tableau contenant les angles de l'orientation de slave [yaw, Roll, Pitch] [lacet, tangage, roulis] en radians
  */
 void getSlaveData(float (&ypr_slave)[3]);
 //############################ SON ###################################
@@ -94,11 +93,11 @@ void playCalibrationSound();
  * @brief
  *  Fonction pour enregistrer les données sur la carte SD, et les afficher dans le moniteur série
  * @param ypr_master
- *  Tableau contenant les angles de l'orientation de master [yaw, pitch, roll] [lacet, tangage, roulis] en degrés
+ *  Tableau contenant les angles de l'orientation de master [yaw, Roll, Pitch] [lacet, tangage, roulis] en degrés
  * @param ypr_slave
- *  Tableau contenant les angles de l'orientation de slave [yaw, pitch, roll] [lacet, tangage, roulis] en degrés
+ *  Tableau contenant les angles de l'orientation de slave [yaw, Roll, Pitch] [lacet, tangage, roulis] en degrés
  * @param ypr_diff
- *  Tableau contenant les différences entre les angles de l'orientation de master et de slave [yaw, pitch, roll] [lacet, tangage, roulis] en degrés
+ *  Tableau contenant les différences entre les angles de l'orientation de master et de slave [yaw, Roll, Pitch] [lacet, tangage, roulis] en degrés
  * @param speed
  *  Vitesse du vélo en km/h
  * @param alarmState
@@ -118,8 +117,8 @@ Alarm alarmSystem(PIN_BUZZER, PIN_LED, 70, 3, 0.1, 0.1);
 
 // Objet pour la gestion du MPU
 MPU mpu;
-float ypr[3]; // Tableau contenant les angles de l'orientation [yaw, pitch, roll] du master en degrés
-float yprSlave[3]; // Tableau contenant les angles de l'orientation [yaw, pitch, roll] du slave en degrés
+float ypr[3]; // Tableau contenant les angles de l'orientation [yaw, Roll, Pitch] du master en degrés
+float yprSlave[3]; // Tableau contenant les angles de l'orientation [yaw, Roll, Pitch] du slave en degrés
 // ############################ TACHYMÈTRE ###################################
 
 // Objet pour la gestion du tachymètre
@@ -205,7 +204,7 @@ void setup()
     myFile = SD.open("/example.csv", FILE_WRITE); //  Créer un fichier CSV pour stocker les données
     // Écrire les en-têtes dans le fichier
     myFile.println(
-        "time,yaw_master,pitch_master,roll_master,yaw_slave,pitch_slave,roll_slave,yaw_diff,pitch_diff,roll_diff,speed,alarmState,limit_angle,limit_time");
+        "time,yaw_master,Roll_master,Pitch_master,yaw_slave,Roll_slave,Pitch_slave,yaw_diff,Roll_diff,Pitch_diff,speed,alarmState,limit_angle,limit_time");
     myFile.close();  //  Fermer le fichier
     
     //############################ BLUETOOTH Setup ################################
@@ -245,7 +244,7 @@ void loop()
                           myName.c_str());
             connectSlave();
             Serial.println(
-                "time,yaw_master,pitch_master,roll_master,yaw_slave,pitch_slave,roll_slave,yaw_diff,pitch_diff,roll_diff,speed");
+                "time,yaw_master,Roll_master,Pitch_master,yaw_slave,Roll_slave,Pitch_slave,yaw_diff,Roll_diff,Pitch_diff,speed");
         }
     }
     if (SerialBT.available()) // Si des données sont disponibles sur le port série Bluetooth
@@ -259,9 +258,9 @@ void loop()
         /*buttonState = digitalRead(buttonPin);
         Serial.print("Système non démarré --> Yaw : ");
             Serial.print(ypr[0]);
-            Serial.print(" Roll : ");
-            Serial.print(ypr[1]);
             Serial.print(" Pitch : ");
+            Serial.print(ypr[1]);
+            Serial.print(" Roll : ");
             Serial.println(ypr[2]);*/
         // Lit l'état du bouton - Le système démarre lorsque le bouton est pressé, les angles sont mis à zéro
         buttonState = digitalRead(buttonPin);
@@ -310,9 +309,9 @@ void loop()
         {
             Serial.print("Système non démarré --> Yaw : ");
             Serial.print(ypr[0]);
-            Serial.print(" Roll : ");
-            Serial.print(ypr[1]);
             Serial.print(" Pitch : ");
+            Serial.print(ypr[1]);
+            Serial.print(" Roll : ");
             Serial.println(ypr[2]);
             // REMARQUE : Tant que le système n'est pas démarré, les données ne sont pas enregistrées sur la carte SD.
         }
@@ -444,7 +443,7 @@ void logData(const float (&ypr_master)[3], const float (&ypr_slave)[3], const fl
         // Créer une chaîne de caractères pour l'affichage aligné dans le moniteur série
         char formattedString[512];
         /*sprintf(formattedString,
-                "time: %lu YAW --> Master: %7.2f Slave: %7.2f Diff: %7.2f PITCH --> Master: %7.2f Slave: %7.2f Diff: %7.2f ROLL --> Master: %7.2f Slave: %7.2f Diff: %7.2f Speed: %7.2f limit_angle: %7.2f limit_time: %7.2f",
+                "time: %lu YAW --> Master: %7.2f Slave: %7.2f Diff: %7.2f Roll --> Master: %7.2f Slave: %7.2f Diff: %7.2f Pitch --> Master: %7.2f Slave: %7.2f Diff: %7.2f Speed: %7.2f limit_angle: %7.2f limit_time: %7.2f",
                 millis(),
                 ypr_master[0], ypr_slave[0], ypr_diff[0],
                 ypr_master[1], ypr_slave[1], ypr_diff[1],
@@ -464,7 +463,7 @@ void logData(const float (&ypr_master)[3], const float (&ypr_slave)[3], const fl
 
 void playCalibrationSound()
 {
-    // Définir la mélodie à jouer. Les notes sont définies dans le fichier pitches.h
+    // Définir la mélodie à jouer. Les notes sont définies dans le fichier Rolles.h
     int melody[] = {NOTE_G4, NOTE_B4, NOTE_D5};
     constexpr int noteDuration = 1000 / 4; // Durée de chaque note (en ms)
     constexpr int pauseBetweenNotes = noteDuration * 1.30; // Pause entre chaque note

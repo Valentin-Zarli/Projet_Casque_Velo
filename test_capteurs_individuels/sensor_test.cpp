@@ -5,7 +5,7 @@
   - Fuses the data from the accel, gyro, and external magnetometer if applied,
   compensating individual sensor noise and errors.
   - Detect specific types of motion without the need to continuously monitor
-  raw sensor data with a microcontroller.
+  raw sensor data with a microcontPitcher.
   - Reduce workload on the microprocessor.
   - Output processed data such as quaternions, Euler angles, and gravity vectors.
 
@@ -51,9 +51,9 @@ environment like Processing.
 - Use "OUTPUT_READABLE_EULER" for Euler angles (in degrees) output, calculated from the quaternions coming
 from the FIFO. EULER ANGLES SUFFER FROM GIMBAL LOCK PROBLEM.
 
-- Use "OUTPUT_READABLE_YAWPITCHROLL" for yaw/pitch/roll angles (in degrees) calculated from the quaternions
+- Use "OUTPUT_READABLE_YAWRollPitch" for yaw/Roll/Pitch angles (in degrees) calculated from the quaternions
 coming from the FIFO. THIS REQUIRES GRAVITY VECTOR CALCULATION.
-YAW/PITCH/ROLL ANGLES SUFFER FROM GIMBAL LOCK PROBLEM.
+YAW/Roll/Pitch ANGLES SUFFER FROM GIMBAL LOCK PROBLEM.
 
 - Use "OUTPUT_READABLE_REALACCEL" for acceleration components with gravity removed. The accel reference frame
 is not compensated for orientation. +X will always be +X according to the sensor.
@@ -63,7 +63,7 @@ reference frame. Yaw is relative if there is no magnetometer present.
 
 -  Use "OUTPUT_TEAPOT" for output that matches the InvenSense teapot demo.
 -------------------------------------------------------------------------------------------------------------------------------*/
-#define OUTPUT_READABLE_YAWPITCHROLL
+#define OUTPUT_READABLE_YAWRollPitch
 //#define OUTPUT_READABLE_QUATERNION
 //#define OUTPUT_READABLE_EULER
 // #define OUTPUT_READABLE_REALACCEL
@@ -89,7 +89,7 @@ VectorInt16 aaReal;     // [x, y, z]            Gravity-free accel sensor measur
 VectorInt16 aaWorld;    // [x, y, z]            World-frame accel sensor measurements
 VectorFloat gravity;    // [x, y, z]            Gravity vector
 float euler[3];         // [psi, theta, phi]    Euler angle container
-float ypr[3];           // [yaw, pitch, roll]   Yaw/Pitch/Roll container and gravity vector
+float ypr[3];           // [yaw, Roll, Pitch]   Yaw/Roll/Pitch container and gravity vector
 
 /*-Packet structure for InvenSense teapot demo-*/
 uint8_t teapotPacket[14] = { '$', 0x02, 0, 0, 0, 0, 0, 0, 0, 0, 0x00, 0x00, '\r', '\n' };
@@ -189,7 +189,7 @@ void setup() {
     // 2 = DMP configuration updates failed
   }
   pinMode(A5, OUTPUT);
-  Serial.println("time,yaw,pitch,roll");
+  Serial.println("time,yaw,Roll,Pitch");
   temps = millis();
 }
 
@@ -198,12 +198,12 @@ void loop() {
 
   /* Read a packet from FIFO */
   if (mpu.dmpGetCurrentFIFOPacket(FIFOBuffer)) { // Get the Latest packet
-    #ifdef OUTPUT_READABLE_YAWPITCHROLL
+    #ifdef OUTPUT_READABLE_YAWRollPitch
       /* Display Euler angles in degrees */
       mpu.dmpGetQuaternion(&q, FIFOBuffer);
       mpu.dmpGetGravity(&gravity, &q);
       // applyRotationCorrection(q);
-      mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+      mpu.dmpGetYawRollPitch(ypr, &q, &gravity);
       // Serial.print("ypr\t");
       Serial.print(millis()-temps);
       Serial.print(",");
